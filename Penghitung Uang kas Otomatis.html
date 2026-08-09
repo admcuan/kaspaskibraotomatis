@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Neraca Kas - Paskibra YBAC</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <!-- html2pdf.js CDN untuk Ekspor PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'paskibra-red': '#8B0000',
+                        'paskibra-red-dark': '#5A0000',
+                        'paskibra-red-light': '#B22222',
+                        'paskibra-gold': '#D4AF37',
+                        'paskibra-gold-bright': '#FFD700',
+                        'paskibra-gold-light': '#F3E5AB',
+                        'dark-obsidian': '#0D0E12',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        cinzel: ['Cinzel', 'serif'],
+                    },
+                    boxShadow: {
+                        'gold-glow': '0 0 25px rgba(212, 175, 55, 0.25)',
+                        'red-glow': '0 10px 30px rgba(139, 0, 0, 0.3)',
+                        'card-hover': '0 20px 40px -15px rgba(0, 0, 0, 0.08)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gold-gradient {
+            background: linear-gradient(135deg, #FFE259 0%, #FFA751 100%);
+        }
+        .gold-text-gradient {
+            background: linear-gradient(135deg, #FFE57F 0%, #D4AF37 50%, #996515 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .red-gradient {
+            background: linear-gradient(135deg, #990000 0%, #570000 100%);
+        }
+        .hero-card-gradient {
+            background: linear-gradient(135deg, #1A0505 0%, #380808 50%, #110303 100%);
+        }
+        .bg-mesh {
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(139, 0, 0, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(212, 175, 55, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 0, 0, 0.04) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(212, 175, 55, 0.06) 0px, transparent 50%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+        .dark-glass {
+            background: rgba(15, 15, 20, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-mesh text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-paskibra-red selection:text-white">
+
+    <!-- ========================================== -->
+    <!-- 1. LOGIN SCREEN PANEL                      -->
+    <!-- ========================================== -->
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-dark-obsidian/95 backdrop-blur-xl px-4 overflow-y-auto py-10">
+        <div class="absolute top-1/4 left-1/3 w-96 h-96 bg-paskibra-red/30 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/3 w-96 h-96 bg-paskibra-gold/20 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div class="relative w-full max-w-md rounded-3xl dark-glass shadow-red-glow overflow-hidden border border-paskibra-gold/40 my-auto">
+            <div class="relative p-8 text-center text-white overflow-hidden border-b border-white/10">
+                <div class="absolute inset-0 red-gradient opacity-80"></div>
+                <div class="relative z-10">
+                    <div class="relative w-28 h-28 mx-auto mb-4">
+                        <div class="absolute inset-0 rounded-full bg-paskibra-gold/40 blur-md animate-pulse"></div>
+                        <div class="relative w-full h-full rounded-full bg-white p-1.5 border-2 border-paskibra-gold shadow-gold-glow flex items-center justify-center overflow-hidden">
+                            <img src="Logo.jpg" alt="Logo Paskibra YBAC" class="w-full h-full object-contain rounded-full contrast-125 brightness-105" onerror="this.src='https://via.placeholder.com/150/8B0000/FFFFFF?text=YBAC'">
+                        </div>
+                    </div>
+                    <h2 class="font-cinzel text-2xl font-black tracking-wider gold-text-gradient">PASKIBRA YBAC</h2>
+                    <p class="text-[11px] text-slate-300 uppercase tracking-[0.2em] mt-1 font-bold">Sistem Neraca Kas Otomatis</p>
+                    <div class="mt-4 inline-flex items-center gap-2 bg-black/40 backdrop-blur-md px-3.5 py-1 rounded-full border border-paskibra-gold/30 text-xs text-paskibra-gold-light">
+                        <i class="fa-solid fa-shield-halved text-paskibra-gold"></i>
+                        <span class="font-semibold">Otentikasi Pengurus Resmi</span>
+                    </div>
+                </div>
+            </div>
+
+            <form id="login-form" class="p-8 space-y-5">
+                <div id="login-error" class="hidden p-3.5 bg-red-950/80 border border-red-500/50 text-red-200 text-xs rounded-2xl flex items-center gap-3">
+                    <i class="fa-solid fa-circle-exclamation text-lg text-red-400 shrink-0"></i>
+                    <span id="login-error-msg">Username atau Password salah!</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-paskibra-gold-light uppercase tracking-wider mb-2">Username Pengurus</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-paskibra-gold/70">
+                            <i class="fa-solid fa-user-shield text-sm"></i>
+                        </span>
+                        <input type="text" id="login-username" required placeholder="Masukkan username"
+                            class="w-full pl-11 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:border-paskibra-gold focus:ring-1 focus:ring-paskibra-gold transition text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-paskibra-gold-light uppercase tracking-wider mb-2">Kata Sandi</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-paskibra-gold/70">
+                            <i class="fa-solid fa-key text-sm"></i>
+                        </span>
+                        <input type="password" id="login-password" required placeholder="••••••••"
+                            class="w-full pl-11 pr-11 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:border-paskibra-gold focus:ring-1 focus:ring-paskibra-gold transition text-sm">
+                        <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-white transition">
+                            <i class="fa-solid fa-eye" id="eye-icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="w-full py-4 px-4 red-gradient hover:brightness-110 text-white font-bold rounded-2xl shadow-lg shadow-red-950/80 hover:shadow-red-900/50 transition-all duration-300 flex items-center justify-center gap-2 text-sm tracking-widest uppercase mt-6 group border border-red-500/30">
+                    <span>Masuk Ke Panel Kas</span>
+                    <i class="fa-solid fa-arrow-right-to-bracket text-paskibra-gold group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </form>
+            
+            <div class="bg-black/40 px-8 py-4 border-t border-white/5 text-center">
+                <p class="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold">Paskibra YBAC • Disiplin • Setia • Bertanggung Jawab</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. MAIN DASHBOARD APPLICATION              -->
+    <!-- ========================================== -->
+    <div id="dashboard-app" class="hidden min-h-screen flex flex-col justify-between">
+        
+        <!-- TOP NAVBAR -->
+        <header class="red-gradient text-white shadow-2xl border-b-2 border-paskibra-gold/60 sticky top-0 z-40 no-print">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-3">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-12 h-12 rounded-full bg-white p-1 border-2 border-paskibra-gold shadow-gold-glow flex items-center justify-center overflow-hidden shrink-0">
+                        <img src="Logo.jpg" alt="Logo YBAC" class="w-full h-full object-contain rounded-full contrast-125" onerror="this.src='https://via.placeholder.com/150/8B0000/FFFFFF?text=YBAC'">
+                    </div>
+                    <div>
+                        <h1 class="font-cinzel text-xl sm:text-2xl font-black tracking-wider text-white flex items-center gap-2">
+                            PASKIBRA YBAC
+                        </h1>
+                        <p class="text-[11px] text-paskibra-gold-light tracking-widest uppercase font-semibold flex items-center gap-2">
+                            <span>Sistem Neraca Kas Otomatis</span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span class="text-[10px] text-emerald-300">Terintegrasi</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-0 border-white/10 pt-2 sm:pt-0">
+                    <div class="hidden md:flex items-center gap-2 bg-black/30 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
+                        <i class="fa-regular fa-clock text-paskibra-gold"></i>
+                        <span id="live-datetime" class="font-medium text-slate-200">Senin, 10 Ags 2026</span>
+                    </div>
+
+                    <div class="flex items-center gap-3 bg-black/40 px-3.5 py-1.5 rounded-2xl border border-paskibra-gold/30">
+                        <div class="w-7 h-7 rounded-xl gold-gradient flex items-center justify-center text-slate-900 font-extrabold text-xs shadow-md">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <div class="text-left">
+                            <p id="user-display-name" class="text-xs font-bold text-white leading-tight">Administrator Bendahara PASKIBRA YBAC</p>
+                            <p class="text-[9px] text-paskibra-gold-light uppercase tracking-wider font-semibold">Pengurus Kas</p>
+                        </div>
+                    </div>
+
+                    <button id="btn-logout" title="Keluar"
+                        class="bg-white/10 hover:bg-red-600/80 text-white p-2.5 rounded-2xl border border-white/20 transition-all duration-200 flex items-center justify-center">
+                        <i class="fa-solid fa-power-off text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTAINER -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-8">
+            
+            <!-- SUMMARY CARDS (KAS & TUNGGAKAN OVERVIEW) -->
+            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <!-- Card 1: Total Saldo Kas -->
+                <div class="hero-card-gradient rounded-3xl p-5 shadow-xl border border-paskibra-gold/40 text-white relative overflow-hidden group hover:scale-[1.01] transition-all">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="px-2.5 py-0.5 rounded-full bg-paskibra-gold/20 border border-paskibra-gold/40 text-[10px] font-bold text-paskibra-gold-light uppercase tracking-wider">
+                                Kas Utama
+                            </span>
+                            <p class="text-[11px] font-semibold text-slate-300 mt-2">Total Saldo Kas</p>
+                            <h3 id="card-total-saldo" class="text-2xl sm:text-3xl font-black text-white gold-text-gradient mt-1">
+                                Rp 0
+                            </h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-2xl gold-gradient flex items-center justify-center text-slate-950 shadow-gold-glow">
+                            <i class="fa-solid fa-wallet text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Total Pemasukan -->
+                <div class="glass-card rounded-3xl p-5 shadow-md border-l-4 border-emerald-500 hover:scale-[1.01] transition-all">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider">
+                                Uang Masuk
+                            </span>
+                            <p class="text-[11px] font-semibold text-slate-500 mt-2">Akumulasi Pemasukan</p>
+                            <h3 id="card-total-pemasukan" class="text-xl sm:text-2xl font-extrabold text-emerald-600 mt-1">
+                                Rp 0
+                            </h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                            <i class="fa-solid fa-arrow-trend-up text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Total Pengeluaran -->
+                <div class="glass-card rounded-3xl p-5 shadow-md border-l-4 border-paskibra-red hover:scale-[1.01] transition-all">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="px-2.5 py-0.5 rounded-full bg-red-100 text-paskibra-red text-[10px] font-bold uppercase tracking-wider">
+                                Uang Keluar
+                            </span>
+                            <p class="text-[11px] font-semibold text-slate-500 mt-2">Akumulasi Pengeluaran</p>
+                            <h3 id="card-total-pengeluaran" class="text-xl sm:text-2xl font-extrabold text-paskibra-red mt-1">
+                                Rp 0
+                            </h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-2xl bg-red-50 text-paskibra-red flex items-center justify-center">
+                            <i class="fa-solid fa-arrow-trend-down text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Total Tunggakan Kas (PIUTANG) -->
+                <div class="glass-card rounded-3xl p-5 shadow-md border-l-4 border-amber-500 hover:scale-[1.01] transition-all">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-bold uppercase tracking-wider">
+                                Piutang Kas
+                            </span>
+                            <p class="text-[11px] font-semibold text-slate-500 mt-2">Total Tunggakan Kas</p>
+                            <h3 id="card-total-tunggakan" class="text-xl sm:text-2xl font-extrabold text-amber-600 mt-1">
+                                Rp 0
+                            </h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                            <i class="fa-solid fa-hand-holding-dollar text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ACTION BAR FITUR BARU: PDF EXPORT & BACKUP -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-4 rounded-3xl text-white flex flex-wrap items-center justify-between gap-4 border border-paskibra-gold/30 shadow-lg no-print">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl gold-gradient flex items-center justify-center text-slate-900 font-extrabold shadow-md">
+                        <i class="fa-solid fa-file-pdf text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-sm text-white">Laporan Hasil Neraca Keuangan PDF</h3>
+                        <p class="text-xs text-slate-300">Cetak dokumen neraca kas resmi lengkap dengan Kop Surat & Tanda Tangan</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button id="btn-generate-pdf" class="px-4 py-2.5 gold-gradient hover:brightness-110 text-slate-950 font-extrabold text-xs rounded-xl shadow-md transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf"></i> Unduh Laporan Neraca (PDF)
+                    </button>
+                    <button id="btn-export-json" class="px-3.5 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-600">
+                        <i class="fa-solid fa-download"></i> Backup Data
+                    </button>
+                    <label class="px-3.5 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-600 cursor-pointer">
+                        <i class="fa-solid fa-upload"></i> Import Data
+                        <input type="file" id="input-import-json" accept=".json" class="hidden">
+                    </label>
+                </div>
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- SECTION 1: RIWAYAT TRANSAKSI KAS UTAMA               -->
+            <!-- ===================================================== -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- FORM TRANSAKSI -->
+                <div class="lg:col-span-4 glass-card rounded-3xl shadow-xl p-6 border border-slate-200/80 h-fit no-print">
+                    <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-200/60">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl red-gradient flex items-center justify-center text-white text-sm shadow-md">
+                                <i class="fa-solid fa-plus-circle" id="form-icon"></i>
+                            </div>
+                            <div>
+                                <h2 id="form-title" class="font-extrabold text-slate-900 text-base">Tambah Transaksi Kas</h2>
+                                <p class="text-[11px] text-slate-400">Pencatatan kas masuk / keluar</p>
+                            </div>
+                        </div>
+                        <button id="btn-cancel-edit" type="button" class="hidden text-xs text-slate-400 hover:text-red-600 font-bold bg-slate-100 px-2.5 py-1 rounded-lg transition">
+                            Batal
+                        </button>
+                    </div>
+
+                    <form id="transaction-form" class="space-y-4">
+                        <input type="hidden" id="edit-id" value="">
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Tanggal</label>
+                            <input type="date" id="input-tanggal" required
+                                class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/80 focus:ring-2 focus:ring-paskibra-red outline-none text-sm text-slate-800 font-medium">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Keterangan / Keperluan</label>
+                            <input type="text" id="input-keterangan" placeholder="Contoh: Uang Kas Mingguan Anggota" required
+                                class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/80 focus:ring-2 focus:ring-paskibra-red outline-none text-sm text-slate-800">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Jenis Transaksi</label>
+                                <select id="input-tipe" required
+                                    class="w-full px-3 py-3 rounded-xl border border-slate-200 bg-white/80 focus:ring-2 focus:ring-paskibra-red outline-none text-xs font-semibold text-slate-800">
+                                    <option value="masuk" class="text-emerald-700 font-bold">🟢 Pemasukan (+)</option>
+                                    <option value="keluar" class="text-paskibra-red font-bold">🔴 Pengeluaran (-)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kategori</label>
+                                <select id="input-kategori" required
+                                    class="w-full px-3 py-3 rounded-xl border border-slate-200 bg-white/80 focus:ring-2 focus:ring-paskibra-red outline-none text-xs font-semibold text-slate-800">
+                                    <option value="Kas Rutin">Kas Rutin</option>
+                                    <option value="Perlengkapan">Perlengkapan</option>
+                                    <option value="Sumbangan">Sumbangan / Hibah</option>
+                                    <option value="Kegiatan / Acara">Kegiatan / Acara</option>
+                                    <option value="Konsumsi">Konsumsi</option>
+                                    <option value="Lainnya">Lain-lain</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nominal (Rp)</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center font-bold text-xs text-slate-400">Rp</span>
+                                <input type="number" id="input-nominal" min="1" placeholder="0" required
+                                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-white/80 focus:ring-2 focus:ring-paskibra-red outline-none text-sm font-extrabold text-slate-900">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Upload Bukti (PDF / Gambar)</label>
+                            <input type="file" id="input-bukti-file" accept=".pdf,image/*"
+                                class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 transition border border-slate-200 rounded-xl bg-white/80">
+                        </div>
+
+                        <button type="submit" id="btn-submit-form"
+                            class="w-full py-3.5 px-4 red-gradient hover:brightness-110 text-white font-bold rounded-2xl shadow-lg transition duration-200 flex items-center justify-center gap-2 text-sm tracking-wider uppercase mt-4">
+                            <i class="fa-solid fa-floppy-disk text-paskibra-gold"></i> <span id="btn-submit-text">Simpan Transaksi</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- TABEL TRANSAKSI KAS -->
+                <div class="lg:col-span-8 glass-card rounded-3xl shadow-xl p-6 border border-slate-200/80 flex flex-col justify-between">
+                    <div>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-4 border-b border-slate-200/60">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-xl gold-gradient flex items-center justify-center text-slate-900 text-sm shadow-md no-print">
+                                    <i class="fa-solid fa-receipt"></i>
+                                </div>
+                                <div>
+                                    <h2 class="font-extrabold text-slate-900 text-base">Riwayat Kas Utama</h2>
+                                    <p class="text-[11px] text-slate-400">Pencatatan Keuangan Resmi YBAC</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-2 no-print flex-wrap">
+                                <button id="btn-export-csv" class="bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5 border border-slate-200">
+                                    <i class="fa-solid fa-file-csv text-emerald-600"></i> Export CSV
+                                </button>
+                                <button id="btn-print" class="bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5 border border-slate-200">
+                                    <i class="fa-solid fa-print text-paskibra-red"></i> Cetak
+                                </button>
+                                <button id="btn-reset-data" class="bg-red-50 hover:bg-red-100 text-paskibra-red text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5 border border-red-200">
+                                    <i class="fa-solid fa-rotate-right"></i> Reset
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- SEARCH & FILTER DENGAN RENTANG TANGGAL -->
+                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-4 no-print">
+                            <div class="sm:col-span-2 relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                                </span>
+                                <input type="text" id="search-filter" placeholder="Cari rincian transaksi..."
+                                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-paskibra-red outline-none text-xs text-slate-800">
+                            </div>
+                            <div>
+                                <select id="type-filter" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-paskibra-red outline-none text-xs text-slate-700 font-semibold">
+                                    <option value="all">Semua Tipe</option>
+                                    <option value="masuk">Pemasukan (+)</option>
+                                    <option value="keluar">Pengeluaran (-)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <select id="category-filter" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-paskibra-red outline-none text-xs text-slate-700 font-semibold">
+                                    <option value="all">Semua Kategori</option>
+                                    <option value="Kas Rutin">Kas Rutin</option>
+                                    <option value="Perlengkapan">Perlengkapan</option>
+                                    <option value="Sumbangan">Sumbangan</option>
+                                    <option value="Kegiatan / Acara">Kegiatan / Acara</option>
+                                    <option value="Konsumsi">Konsumsi</option>
+                                    <option value="Lainnya">Lain-lain</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- FILTER PERIODE TANGGAL -->
+                        <div class="flex items-center gap-2 bg-slate-50 p-2.5 rounded-2xl border border-slate-200/80 mb-4 text-xs no-print">
+                            <i class="fa-solid fa-calendar-days text-paskibra-red ml-1"></i>
+                            <span class="font-bold text-slate-600">Filter Periode:</span>
+                            <input type="date" id="filter-start-date" class="px-2 py-1 rounded-lg border border-slate-200 text-xs outline-none bg-white">
+                            <span class="text-slate-400">s/d</span>
+                            <input type="date" id="filter-end-date" class="px-2 py-1 rounded-lg border border-slate-200 text-xs outline-none bg-white">
+                            <button id="btn-reset-date-filter" class="text-[10px] font-bold bg-slate-200 hover:bg-slate-300 px-2 py-1 rounded-lg text-slate-700">Clear</button>
+                        </div>
+
+                        <div class="overflow-x-auto rounded-2xl border border-slate-200/80 bg-white/70">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100/80 text-slate-600 uppercase text-[10px] font-black tracking-widest border-b border-slate-200">
+                                        <th class="py-3.5 px-4">Tanggal</th>
+                                        <th class="py-3.5 px-4">Keterangan</th>
+                                        <th class="py-3.5 px-4">Kategori</th>
+                                        <th class="py-3.5 px-4 text-center">Tipe</th>
+                                        <th class="py-3.5 px-4 text-center">Bukti</th>
+                                        <th class="py-3.5 px-4 text-right">Nominal</th>
+                                        <th class="py-3.5 px-4 text-center no-print">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body" class="divide-y divide-slate-100 text-xs">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-slate-200/60 flex justify-between items-center text-[11px] text-slate-400">
+                        <p><i class="fa-solid fa-shield-halved text-paskibra-gold"></i> Paskibra YBAC Official</p>
+                        <span id="data-status-info" class="font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">Total: 0 Transaksi</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- SECTION 2: PANEL MONITORING TUNGGAKAN KAS ANGGOTA    -->
+            <!-- ===================================================== -->
+            <div class="pt-6 border-t border-slate-200/80">
+                <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-[10px] font-black uppercase text-amber-900 tracking-wider">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Pengawasan Kedisiplinan Kas
+                        </div>
+                        <h2 class="text-2xl font-black text-slate-900 mt-1">Panel Data Tunggakan Kas Anggota</h2>
+                        <p class="text-xs text-slate-500">Memantau anggota yang menunggak kas secara mendetail dan mengidentifikasi anggota yang sering nunggak.</p>
+                    </div>
+
+                    <div id="top-delinquent-badge" class="bg-red-50 border-2 border-red-200 rounded-2xl p-3 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-paskibra-red text-white flex items-center justify-center text-lg shrink-0">
+                            <i class="fa-solid fa-user-xmark"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Paling Sering Nunggak</p>
+                            <p id="top-delinquent-name" class="text-xs font-black text-paskibra-red">Tidak Ada</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    <!-- FORM INPUT TUNGGAKAN -->
+                    <div class="lg:col-span-4 glass-card rounded-3xl shadow-xl p-6 border border-amber-200/70 h-fit no-print">
+                        <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-200/60">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 text-sm shadow-md">
+                                    <i class="fa-solid fa-user-plus" id="tunggakan-form-icon"></i>
+                                </div>
+                                <div>
+                                    <h3 id="tunggakan-form-title" class="font-extrabold text-slate-900 text-base">Catat Tunggakan Baru</h3>
+                                    <p class="text-[11px] text-slate-400">Tambahkan data anggota nunggak</p>
+                                </div>
+                            </div>
+                            <button id="btn-cancel-tunggakan" type="button" class="hidden text-xs text-slate-400 hover:text-red-600 font-bold bg-slate-100 px-2.5 py-1 rounded-lg transition">
+                                Batal
+                            </button>
+                        </div>
+
+                        <form id="tunggakan-form" class="space-y-4">
+                            <input type="hidden" id="edit-tunggakan-id" value="">
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Anggota</label>
+                                <input type="text" id="tunggakan-nama" placeholder="Contoh: Ahmad Subagja" required
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-amber-500 outline-none text-sm text-slate-800 font-medium">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Angkatan / Kelas</label>
+                                    <input type="text" id="tunggakan-angkatan" placeholder="Contoh: Angkatan 2025" required
+                                        class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-amber-500 outline-none text-sm text-slate-800">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Durasi (Minggu)</label>
+                                    <input type="number" id="tunggakan-durasi" min="1" placeholder="1" required
+                                        class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-amber-500 outline-none text-sm text-slate-800">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Total Nominal Tunggakan (Rp)</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center font-bold text-xs text-slate-400">Rp</span>
+                                    <input type="number" id="tunggakan-nominal" min="1000" step="1000" placeholder="10000" required
+                                        class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-amber-500 outline-none text-sm font-extrabold text-amber-700">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Catatan / Alasan</label>
+                                <input type="text" id="tunggakan-catatan" placeholder="Contoh: Nunggak bulan Juli & Agustus"
+                                    class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-amber-500 outline-none text-sm text-slate-800">
+                            </div>
+
+                            <button type="submit" id="btn-submit-tunggakan"
+                                class="w-full py-3.5 px-4 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold rounded-2xl shadow-lg transition duration-200 flex items-center justify-center gap-2 text-sm tracking-wider uppercase mt-4">
+                                <i class="fa-solid fa-user-check"></i> <span id="btn-submit-tunggakan-text">Simpan Data Tunggakan</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- TABEL DATA TUNGGAKAN ANGGOTA -->
+                    <div class="lg:col-span-8 glass-card rounded-3xl shadow-xl p-6 border border-slate-200/80 flex flex-col justify-between">
+                        <div>
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-4 border-b border-slate-200/60">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl bg-paskibra-red flex items-center justify-center text-white text-sm shadow-md">
+                                        <i class="fa-solid fa-users-slash"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-extrabold text-slate-900 text-base">Daftar Anggota Menunggak</h3>
+                                        <p class="text-[11px] text-slate-400">Klasifikasi anggota berdasarkan tingkat kedisiplinan</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-2 no-print">
+                                    <input type="text" id="search-tunggakan" placeholder="Cari nama anggota..."
+                                        class="px-3 py-2 rounded-xl border border-slate-200 text-xs outline-none focus:ring-2 focus:ring-amber-500">
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto rounded-2xl border border-slate-200/80 bg-white/70">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-100/80 text-slate-600 uppercase text-[10px] font-black tracking-widest border-b border-slate-200">
+                                            <th class="py-3.5 px-4">Nama Anggota</th>
+                                            <th class="py-3.5 px-4">Angkatan</th>
+                                            <th class="py-3.5 px-4 text-center">Durasi Nunggak</th>
+                                            <th class="py-3.5 px-4 text-right">Nominal</th>
+                                            <th class="py-3.5 px-4 text-center">Status Kedisiplinan</th>
+                                            <th class="py-3.5 px-4 text-center no-print">Aksi Pelunasan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tunggakan-table-body" class="divide-y divide-slate-100 text-xs">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-slate-200/60 flex justify-between items-center text-[11px] text-slate-400">
+                            <span id="tunggakan-status-info" class="font-bold text-slate-500">Total: 0 Anggota Menunggak</span>
+                            <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                                <i class="fa-solid fa-bolt text-amber-500 mr-1"></i> Klik "Lunasi" untuk otomatis menambah Kas Utama
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="bg-dark-obsidian text-white mt-12 border-t-2 border-paskibra-gold no-print">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white p-0.5 border border-paskibra-gold flex items-center justify-center overflow-hidden shrink-0">
+                        <img src="Logo.jpg" alt="Logo YBAC" class="w-full h-full object-contain rounded-full" onerror="this.src='https://via.placeholder.com/150/8B0000/FFFFFF?text=YBAC'">
+                    </div>
+                    <div>
+                        <p class="font-cinzel text-sm font-bold gold-text-gradient tracking-widest">PASKIBRA YBAC</p>
+                        <p class="text-xs text-slate-400">Pemuda Bersatu, Bangsa Kuat. Pandu Ibu Pertiwi.</p>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500">&copy; 2026 Paskibra YBAC. All rights reserved.</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- TEMPLATE LAPORAN NERACA RESMI KAS UNTUK DITERCETAK KE PDF -->
+    <!-- ========================================================= -->
+    <div class="hidden">
+        <div id="pdf-report-content" class="p-8 bg-white text-slate-900 font-sans leading-normal">
+            <!-- Kop Surat Resmi -->
+            <div class="border-b-4 border-double border-slate-900 pb-4 mb-6 flex items-center justify-between">
+                <div class="w-20 h-20 border border-slate-300 rounded-full p-1 flex items-center justify-center">
+                    <img src="Logo.jpg" class="max-h-full max-w-full object-contain" onerror="this.src='https://via.placeholder.com/150/8B0000/FFFFFF?text=YBAC'">
+                </div>
+                <div class="text-center flex-1 px-4">
+                    <h2 class="text-xl font-black uppercase tracking-wider text-slate-900 font-cinzel">ORGANISASI PASKIBRA YBAC</h2>
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-slate-700">Sistem Pengelolaan Kas & Keuangan Utama</h3>
+                    <p class="text-xs text-slate-500 mt-1">Alamat Resmi Organisasi Paskibra YBAC • Email: info@paskibraybac.org</p>
+                </div>
+                <div class="w-20"></div>
+            </div>
+
+            <!-- Judul Dokumen -->
+            <div class="text-center mb-6">
+                <h1 class="text-lg font-black uppercase underline tracking-wider text-slate-900">LAPORAN NERACA KAS & KEUANGAN RESMI</h1>
+                <p class="text-xs text-slate-600 mt-1" id="pdf-report-date">Periode Cetak: 10 Agustus 2026</p>
+            </div>
+
+            <!-- Ringkasan Neraca Keuangan -->
+            <div class="mb-6">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2 border-b border-slate-300 pb-1">I. RINGKASAN NERACA KEUANGAN</h4>
+                <table class="w-full text-xs border border-slate-300">
+                    <tbody>
+                        <tr class="border-b border-slate-200">
+                            <td class="p-2 font-bold bg-slate-100 w-1/2">Total Accumulasi Pemasukan (Debit)</td>
+                            <td class="p-2 font-extrabold text-emerald-700 text-right" id="pdf-total-pemasukan">Rp 0</td>
+                        </tr>
+                        <tr class="border-b border-slate-200">
+                            <td class="p-2 font-bold bg-slate-100">Total Accumulasi Pengeluaran (Kredit)</td>
+                            <td class="p-2 font-extrabold text-red-700 text-right" id="pdf-total-pengeluaran">Rp 0</td>
+                        </tr>
+                        <tr class="border-b border-slate-300 font-bold bg-slate-200">
+                            <td class="p-2">SALDO KAS NETO SAAT INI</td>
+                            <td class="p-2 font-black text-slate-900 text-right" id="pdf-total-saldo">Rp 0</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 font-bold bg-amber-50">Total Piutang / Tunggakan Anggota</td>
+                            <td class="p-2 font-extrabold text-amber-700 text-right" id="pdf-total-tunggakan">Rp 0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tabel Detail Transaksi Kas -->
+            <div class="mb-6">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2 border-b border-slate-300 pb-1">II. DETAIL TRANSAKSI KAS</h4>
+                <table class="w-full text-[10px] border border-slate-300 border-collapse">
+                    <thead>
+                        <tr class="bg-slate-200 text-slate-800 font-bold border-b border-slate-300">
+                            <th class="p-2 border-r border-slate-300 text-left">No</th>
+                            <th class="p-2 border-r border-slate-300 text-left">Tanggal</th>
+                            <th class="p-2 border-r border-slate-300 text-left">Keterangan</th>
+                            <th class="p-2 border-r border-slate-300 text-left">Kategori</th>
+                            <th class="p-2 border-r border-slate-300 text-center">Tipe</th>
+                            <th class="p-2 text-right">Nominal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pdf-table-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Kolom Tanda Tangan -->
+            <div class="mt-12 pt-6 border-t border-slate-300 flex justify-between text-center text-xs">
+                <div>
+                    <p class="text-slate-600">Mengetahui,</p>
+                    <p class="font-bold text-slate-900 mt-1">Ketua Umum Paskibra YBAC</p>
+                    <div class="h-16"></div>
+                    <p class="font-bold underline text-slate-900">( ........................................... )</p>
+                </div>
+                <div>
+                    <p class="text-slate-600">Dibuat Oleh,</p>
+                    <p class="font-bold text-slate-900 mt-1">Bendahara Pengurus Kas</p>
+                    <div class="h-16"></div>
+                    <p class="font-bold underline text-slate-900" id="pdf-signer-name">( Administrator YBAC )</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT SYSTEM ENGINE -->
+    <script>
+        // =========================================================
+        // LOCAL STORAGE KEYS & DEFAULT DATA
+        // =========================================================
+        const STORAGE_KEY_TRANSACTIONS = 'ybac_kas_transactions_v2';
+        const STORAGE_KEY_TUNGGAKAN = 'ybac_kas_tunggakan_v2';
+        const STORAGE_KEY_AUTH = 'ybac_kas_auth_v2';
+
+        const defaultTransactions = [
+            { id: 1, tanggal: '2026-08-01', keterangan: 'Uang Kas Rutin Anggota Angkatan 2025/2026', kategori: 'Kas Rutin', tipe: 'masuk', nominal: 350000, bukti: '' },
+            { id: 2, tanggal: '2026-08-03', keterangan: 'Pembelian Sarung Tangan Putih & Tali Peluit', kategori: 'Perlengkapan', tipe: 'keluar', nominal: 95000, bukti: '' },
+            { id: 3, tanggal: '2026-08-05', keterangan: 'Sumbangan Pembina & Alumni Latihan', kategori: 'Sumbangan', tipe: 'masuk', nominal: 200000, bukti: '' },
+        ];
+
+        const defaultTunggakan = [
+            { id: 101, nama: 'Budi Santoso', angkatan: 'Angkatan 2024', mingguNunggak: 6, nominal: 60000, status: 'Belum Lunas', catatan: 'Nunggak 6 minggu berturut-turut' },
+            { id: 102, nama: 'Siti Rahma', angkatan: 'Angkatan 2025', mingguNunggak: 2, nominal: 20000, status: 'Belum Lunas', catatan: 'Janji pelunasan akhir bulan' },
+            { id: 103, nama: 'Rian Hidayat', angkatan: 'Angkatan 2024', mingguNunggak: 5, nominal: 50000, status: 'Belum Lunas', catatan: 'Alpa saat sesi penarikan kas' }
+        ];
+
+        let transactions = loadTransactions();
+        let tunggakanList = loadTunggakan();
+        let authSession = loadAuthSession();
+
+        function loadTransactions() {
+            const saved = localStorage.getItem(STORAGE_KEY_TRANSACTIONS);
+            if (saved) {
+                try { return JSON.parse(saved); } catch (e) { return defaultTransactions; }
+            }
+            localStorage.setItem(STORAGE_KEY_TRANSACTIONS, JSON.stringify(defaultTransactions));
+            return [...defaultTransactions];
+        }
+
+        function saveTransactions() {
+            localStorage.setItem(STORAGE_KEY_TRANSACTIONS, JSON.stringify(transactions));
+        }
+
+        function loadTunggakan() {
+            const saved = localStorage.getItem(STORAGE_KEY_TUNGGAKAN);
+            if (saved) {
+                try { return JSON.parse(saved); } catch (e) { return defaultTunggakan; }
+            }
+            localStorage.setItem(STORAGE_KEY_TUNGGAKAN, JSON.stringify(defaultTunggakan));
+            return [...defaultTunggakan];
+        }
+
+        function saveTunggakan() {
+            localStorage.setItem(STORAGE_KEY_TUNGGAKAN, JSON.stringify(tunggakanList));
+        }
+
+        function loadAuthSession() {
+            const saved = localStorage.getItem(STORAGE_KEY_AUTH);
+            return saved ? JSON.parse(saved) : null;
+        }
+
+        function saveAuthSession(user) {
+            localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(user));
+            authSession = user;
+        }
+
+        function clearAuthSession() {
+            localStorage.removeItem(STORAGE_KEY_AUTH);
+            authSession = null;
+        }
+
+        // =========================================================
+        // UTILITIES
+        // =========================================================
+        function formatRupiah(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        function updateLiveDateTime() {
+            const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+            const now = new Date().toLocaleDateString('id-ID', options);
+            const liveElem = document.getElementById('live-datetime');
+            if(liveElem) liveElem.innerText = now;
+        }
+
+        // =========================================================
+        // AUTHENTICATION
+        // =========================================================
+        const loginScreen = document.getElementById('login-screen');
+        const dashboardApp = document.getElementById('dashboard-app');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const btnLogout = document.getElementById('btn-logout');
+        const togglePassword = document.getElementById('toggle-password');
+        const loginPassword = document.getElementById('login-password');
+        const eyeIcon = document.getElementById('eye-icon');
+
+        function checkAuth() {
+            if (authSession && authSession.isLoggedIn) {
+                loginScreen.classList.add('hidden');
+                dashboardApp.classList.remove('hidden');
+                document.getElementById('user-display-name').innerText = authSession.name || 'Administrator YBAC';
+                updateDashboard();
+                updateTunggakanPanel();
+                updateLiveDateTime();
+            } else {
+                loginScreen.classList.remove('hidden');
+                dashboardApp.classList.add('hidden');
+            }
+        }
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = loginPassword.value;
+
+            if (username.toLowerCase() === 'admin' && password === 'paskibra ybac') {
+                loginError.classList.add('hidden');
+                const userData = {
+                    username: username,
+                    name: 'Administrator YBAC',
+                    isLoggedIn: true
+                };
+                saveAuthSession(userData);
+                checkAuth();
+            } else {
+                loginError.classList.remove('hidden');
+                document.getElementById('login-error-msg').innerText = 'Username atau Password salah!';
+            }
+        });
+
+        togglePassword.addEventListener('click', function() {
+            const isPassword = loginPassword.type === 'password';
+            loginPassword.type = isPassword ? 'text' : 'password';
+            eyeIcon.className = isPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+        });
+
+        btnLogout.addEventListener('click', function() {
+            if (confirm('Apakah Anda yakin ingin keluar dari Panel Kas Paskibra YBAC?')) {
+                clearAuthSession();
+                checkAuth();
+            }
+        });
+
+        // =========================================================
+        // KAS UTAMA ENGINE
+        // =========================================================
+        function updateDashboard() {
+            const tableBody = document.getElementById('table-body');
+            const searchKeyword = document.getElementById('search-filter').value.toLowerCase();
+            const selectedType = document.getElementById('type-filter').value;
+            const selectedCategory = document.getElementById('category-filter').value;
+            const startDate = document.getElementById('filter-start-date').value;
+            const endDate = document.getElementById('filter-end-date').value;
+            
+            tableBody.innerHTML = '';
+
+            let totalPemasukan = 0;
+            let totalPengeluaran = 0;
+
+            transactions.forEach((item) => {
+                if (item.tipe === 'masuk') totalPemasukan += item.nominal;
+                else totalPengeluaran += item.nominal;
+            });
+
+            const filteredTransactions = transactions.filter((item) => {
+                const matchKeyword = item.keterangan.toLowerCase().includes(searchKeyword);
+                const matchType = selectedType === 'all' || item.tipe === selectedType;
+                const matchCategory = selectedCategory === 'all' || (item.kategori && item.kategori === selectedCategory);
+                
+                let matchDate = true;
+                if (startDate) matchDate = matchDate && (item.tanggal >= startDate);
+                if (endDate) matchDate = matchDate && (item.tanggal <= endDate);
+
+                return matchKeyword && matchType && matchCategory && matchDate;
+            });
+
+            if (filteredTransactions.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-8 text-slate-400 italic">
+                            Tidak ada data transaksi kas yang sesuai.
+                        </td>
+                    </tr>
+                `;
+            } else {
+                [...filteredTransactions].reverse().forEach((item) => {
+                    const isMasuk = item.tipe === 'masuk';
+                    const badgeClass = isMasuk 
+                        ? 'bg-emerald-100 text-emerald-800 border-emerald-200' 
+                        : 'bg-red-100 text-paskibra-red border-red-200';
+                    const badgeText = isMasuk ? 'Pemasukan' : 'Pengeluaran';
+                    const amountClass = isMasuk ? 'text-emerald-600 font-extrabold' : 'text-paskibra-red font-extrabold';
+                    const amountSign = isMasuk ? '+' : '-';
+                    const categoryText = item.kategori || 'Kas Rutin';
+
+                    const buktiBtn = item.bukti ? `
+                        <button onclick="viewBukti('${item.bukti}')" class="text-indigo-600 hover:text-indigo-800 font-bold text-[10px] bg-indigo-50 border border-indigo-200 px-2 py-1 rounded-lg">
+                            <i class="fa-solid fa-paperclip"></i> Lihat
+                        </button>
+                    ` : '<span class="text-slate-300">-</span>';
+
+                    const row = `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="py-3 px-4 font-semibold text-slate-600 whitespace-nowrap">${formatDate(item.tanggal)}</td>
+                            <td class="py-3 px-4 font-bold text-slate-800">${item.keterangan}</td>
+                            <td class="py-3 px-4 font-medium text-slate-500">${categoryText}</td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="px-2.5 py-1 text-[10px] uppercase font-extrabold rounded-full border ${badgeClass}">
+                                    ${badgeText}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-center">${buktiBtn}</td>
+                            <td class="py-3 px-4 text-right ${amountClass} whitespace-nowrap">
+                                ${amountSign} ${formatRupiah(item.nominal)}
+                            </td>
+                            <td class="py-3 px-4 text-center no-print">
+                                <div class="flex items-center justify-center gap-1">
+                                    <button onclick="editTransaction(${item.id})" class="text-slate-400 hover:text-amber-600 p-1.5 rounded" title="Edit">
+                                        <i class="fa-regular fa-pen-to-square"></i>
+                                    </button>
+                                    <button onclick="deleteTransaction(${item.id})" class="text-slate-400 hover:text-paskibra-red p-1.5 rounded" title="Hapus">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            }
+
+            const totalSaldo = totalPemasukan - totalPengeluaran;
+
+            document.getElementById('card-total-saldo').innerText = formatRupiah(totalSaldo);
+            document.getElementById('card-total-pemasukan').innerText = formatRupiah(totalPemasukan);
+            document.getElementById('card-total-pengeluaran').innerText = formatRupiah(totalPengeluaran);
+            document.getElementById('data-status-info').innerText = `Total: ${transactions.length} Transaksi`;
+        }
+
+        // FORM TRANSAKSI HANDLER (DENGAN FILE UPLOAD BASE64)
+        const transactionForm = document.getElementById('transaction-form');
+        const editIdInput = document.getElementById('edit-id');
+        const btnCancelEdit = document.getElementById('btn-cancel-edit');
+        let currentBuktiBase64 = '';
+
+        document.getElementById('input-bukti-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    currentBuktiBase64 = evt.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        transactionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const editId = editIdInput.value;
+            const tanggal = document.getElementById('input-tanggal').value;
+            const keterangan = document.getElementById('input-keterangan').value.trim();
+            const tipe = document.getElementById('input-tipe').value;
+            const kategori = document.getElementById('input-kategori').value;
+            const nominal = parseFloat(document.getElementById('input-nominal').value);
+
+            if (editId) {
+                const index = transactions.findIndex(t => t.id === parseInt(editId));
+                if (index !== -1) {
+                    const existingBukti = transactions[index].bukti;
+                    transactions[index] = { 
+                        id: parseInt(editId), 
+                        tanggal, 
+                        keterangan, 
+                        kategori,
+                        tipe, 
+                        nominal,
+                        bukti: currentBuktiBase64 || existingBukti
+                    };
+                }
+            } else {
+                transactions.push({ 
+                    id: Date.now(), 
+                    tanggal, 
+                    keterangan, 
+                    kategori,
+                    tipe, 
+                    nominal,
+                    bukti: currentBuktiBase64
+                });
+            }
+
+            saveTransactions();
+            resetForm();
+            updateDashboard();
+        });
+
+        function editTransaction(id) {
+            const item = transactions.find(t => t.id === id);
+            if (!item) return;
+
+            editIdInput.value = item.id;
+            document.getElementById('input-tanggal').value = item.tanggal;
+            document.getElementById('input-keterangan').value = item.keterangan;
+            document.getElementById('input-tipe').value = item.tipe;
+            document.getElementById('input-kategori').value = item.kategori || 'Kas Rutin';
+            document.getElementById('input-nominal').value = item.nominal;
+            currentBuktiBase64 = item.bukti || '';
+
+            document.getElementById('form-title').innerText = "Edit Transaksi";
+            document.getElementById('btn-submit-text').innerText = "Perbarui Transaksi";
+            btnCancelEdit.classList.remove('hidden');
+        }
+
+        function resetForm() {
+            editIdInput.value = '';
+            currentBuktiBase64 = '';
+            transactionForm.reset();
+            document.getElementById('input-tanggal').valueAsDate = new Date();
+            document.getElementById('form-title').innerText = "Tambah Transaksi Kas";
+            document.getElementById('btn-submit-text').innerText = "Simpan Transaksi";
+            btnCancelEdit.classList.add('hidden');
+        }
+
+        btnCancelEdit.addEventListener('click', resetForm);
+
+        function deleteTransaction(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus data transaksi ini?')) {
+                transactions = transactions.filter(item => item.id !== id);
+                saveTransactions();
+                updateDashboard();
+            }
+        }
+
+        function viewBukti(base64Data) {
+            if (!base64Data) return;
+            const win = window.open();
+            win.document.write(`<iframe src="${base64Data}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+        }
+
+        // =========================================================
+        // PANEL DATA TUNGGAKAN KAS ENGINE
+        // =========================================================
+        function updateTunggakanPanel() {
+            const tunggakanBody = document.getElementById('tunggakan-table-body');
+            const searchKeyword = document.getElementById('search-tunggakan').value.toLowerCase();
+            
+            tunggakanBody.innerHTML = '';
+
+            let totalTunggakanNominal = 0;
+            let activeDelinquents = 0;
+            let topDelinquent = null;
+            let maxWeeks = 0;
+
+            const filtered = tunggakanList.filter(item => item.nama.toLowerCase().includes(searchKeyword));
+
+            tunggakanList.forEach((item) => {
+                if (item.status === 'Belum Lunas') {
+                    totalTunggakanNominal += item.nominal;
+                    activeDelinquents++;
+
+                    if (item.mingguNunggak > maxWeeks) {
+                        maxWeeks = item.mingguNunggak;
+                        topDelinquent = item;
+                    }
+                }
+            });
+
+            if (topDelinquent && topDelinquent.mingguNunggak >= 4) {
+                document.getElementById('top-delinquent-name').innerText = `${topDelinquent.nama} (${topDelinquent.mingguNunggak} Mgg - ${formatRupiah(topDelinquent.nominal)})`;
+            } else {
+                document.getElementById('top-delinquent-name').innerText = 'Nihil (Semua Terkontrol)';
+            }
+
+            if (filtered.length === 0) {
+                tunggakanBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-8 text-slate-400 italic">
+                            Tidak ada data tunggakan anggota.
+                        </td>
+                    </tr>
+                `;
+            } else {
+                filtered.forEach((item) => {
+                    const isBelumLunas = item.status === 'Belum Lunas';
+                    const isSeringNunggak = isBelumLunas && (item.mingguNunggak >= 4 || item.nominal >= 40000);
+
+                    let statusBadge = '';
+                    if (!isBelumLunas) {
+                        statusBadge = `<span class="px-2.5 py-1 text-[10px] font-black uppercase rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200"><i class="fa-solid fa-check"></i> Lunas</span>`;
+                    } else if (isSeringNunggak) {
+                        statusBadge = `<span class="px-2.5 py-1 text-[10px] font-black uppercase rounded-full bg-red-100 text-paskibra-red border border-red-200 animate-pulse"><i class="fa-solid fa-triangle-exclamation"></i> Sering Nunggak</span>`;
+                    } else {
+                        statusBadge = `<span class="px-2.5 py-1 text-[10px] font-black uppercase rounded-full bg-amber-100 text-amber-800 border border-amber-200">Nunggak Ringan</span>`;
+                    }
+
+                    const actionButtons = isBelumLunas ? `
+                        <div class="flex items-center justify-center gap-1.5">
+                            <button onclick="lunasiTunggakan(${item.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] px-2.5 py-1.5 rounded-xl shadow transition flex items-center gap-1">
+                                <i class="fa-solid fa-hand-holding-hand"></i> Lunasi
+                            </button>
+                            <button onclick="editTunggakan(${item.id})" class="text-slate-400 hover:text-amber-600 p-1.5 rounded" title="Edit">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteTunggakan(${item.id})" class="text-slate-400 hover:text-paskibra-red p-1.5 rounded" title="Hapus">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                        </div>
+                    ` : `
+                        <span class="text-slate-400 text-[10px] font-bold"><i class="fa-solid fa-circle-check text-emerald-500"></i> Terbayar</span>
+                    `;
+
+                    const row = `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="py-3 px-4 font-bold text-slate-900">${item.nama}</td>
+                            <td class="py-3 px-4 text-slate-600 font-medium">${item.angkatan}</td>
+                            <td class="py-3 px-4 text-center font-extrabold text-amber-700">${item.mingguNunggak} Minggu</td>
+                            <td class="py-3 px-4 text-right font-black text-slate-800">${formatRupiah(item.nominal)}</td>
+                            <td class="py-3 px-4 text-center">${statusBadge}</td>
+                            <td class="py-3 px-4 text-center no-print">${actionButtons}</td>
+                        </tr>
+                    `;
+                    tunggakanBody.insertAdjacentHTML('beforeend', row);
+                });
+            }
+
+            document.getElementById('card-total-tunggakan').innerText = formatRupiah(totalTunggakanNominal);
+            document.getElementById('tunggakan-status-info').innerText = `Total: ${activeDelinquents} Anggota Menunggak Kas`;
+        }
+
+        // TUNGGAKAN FORM HANDLER
+        const tunggakanForm = document.getElementById('tunggakan-form');
+        const editTunggakanIdInput = document.getElementById('edit-tunggakan-id');
+        const btnCancelTunggakan = document.getElementById('btn-cancel-tunggakan');
+
+        tunggakanForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const editId = editTunggakanIdInput.value;
+            const nama = document.getElementById('tunggakan-nama').value.trim();
+            const angkatan = document.getElementById('tunggakan-angkatan').value.trim();
+            const mingguNunggak = parseInt(document.getElementById('tunggakan-durasi').value);
+            const nominal = parseFloat(document.getElementById('tunggakan-nominal').value);
+            const catatan = document.getElementById('tunggakan-catatan').value.trim();
+
+            if (editId) {
+                const index = tunggakanList.findIndex(t => t.id === parseInt(editId));
+                if (index !== -1) {
+                    tunggakanList[index] = { ...tunggakanList[index], nama, angkatan, mingguNunggak, nominal, catatan };
+                }
+            } else {
+                tunggakanList.push({
+                    id: Date.now(),
+                    nama,
+                    angkatan,
+                    mingguNunggak,
+                    nominal,
+                    status: 'Belum Lunas',
+                    catatan
+                });
+            }
+
+            saveTunggakan();
+            resetTunggakanForm();
+            updateTunggakanPanel();
+        });
+
+        function editTunggakan(id) {
+            const item = tunggakanList.find(t => t.id === id);
+            if (!item) return;
+
+            editTunggakanIdInput.value = item.id;
+            document.getElementById('tunggakan-nama').value = item.nama;
+            document.getElementById('tunggakan-angkatan').value = item.angkatan;
+            document.getElementById('tunggakan-durasi').value = item.mingguNunggak;
+            document.getElementById('tunggakan-nominal').value = item.nominal;
+            document.getElementById('tunggakan-catatan').value = item.catatan;
+
+            document.getElementById('tunggakan-form-title').innerText = "Edit Data Tunggakan";
+            document.getElementById('btn-submit-tunggakan-text').innerText = "Perbarui Data";
+            btnCancelTunggakan.classList.remove('hidden');
+        }
+
+        function resetTunggakanForm() {
+            editTunggakanIdInput.value = '';
+            tunggakanForm.reset();
+            document.getElementById('tunggakan-form-title').innerText = "Catat Tunggakan Baru";
+            document.getElementById('btn-submit-tunggakan-text').innerText = "Simpan Data Tunggakan";
+            btnCancelTunggakan.classList.add('hidden');
+        }
+
+        btnCancelTunggakan.addEventListener('click', resetTunggakanForm);
+
+        function deleteTunggakan(id) {
+            if (confirm('Hapus data tunggakan ini?')) {
+                tunggakanList = tunggakanList.filter(item => item.id !== id);
+                saveTunggakan();
+                updateTunggakanPanel();
+            }
+        }
+
+        function lunasiTunggakan(id) {
+            const item = tunggakanList.find(t => t.id === id);
+            if (!item) return;
+
+            const confirmMsg = `Konfirmasi Pelunasan Kas:\n\nNama: ${item.nama}\nNominal: ${formatRupiah(item.nominal)}\n\nLanjutkan pelunasan? Nominal ini akan OTOMATIS ditambahkan ke Pemasukan Kas Utama!`;
+            
+            if (confirm(confirmMsg)) {
+                item.status = 'Lunas';
+                saveTunggakan();
+
+                const today = new Date().toISOString().slice(0, 10);
+                transactions.push({
+                    id: Date.now(),
+                    tanggal: today,
+                    keterangan: `Pelunasan Tunggakan Kas: ${item.nama} (${item.angkatan})`,
+                    kategori: 'Kas Rutin',
+                    tipe: 'masuk',
+                    nominal: item.nominal,
+                    bukti: ''
+                });
+                saveTransactions();
+
+                updateDashboard();
+                updateTunggakanPanel();
+
+                alert(`Pelunasan berhasil! Saldo Kas Utama bertambah ${formatRupiah(item.nominal)}.`);
+            }
+        }
+
+        // =========================================================
+        // PDF REPORT EXPORT GENERATOR
+        // =========================================================
+        document.getElementById('btn-generate-pdf').addEventListener('click', function() {
+            let totalPemasukan = 0;
+            let totalPengeluaran = 0;
+            let totalTunggakan = 0;
+
+            transactions.forEach((item) => {
+                if (item.tipe === 'masuk') totalPemasukan += item.nominal;
+                else totalPengeluaran += item.nominal;
+            });
+
+            tunggakanList.forEach((item) => {
+                if (item.status === 'Belum Lunas') totalTunggakan += item.nominal;
+            });
+
+            const totalSaldo = totalPemasukan - totalPengeluaran;
+
+            // Populate PDF Template
+            document.getElementById('pdf-total-pemasukan').innerText = formatRupiah(totalPemasukan);
+            document.getElementById('pdf-total-pengeluaran').innerText = formatRupiah(totalPengeluaran);
+            document.getElementById('pdf-total-saldo').innerText = formatRupiah(totalSaldo);
+            document.getElementById('pdf-total-tunggakan').innerText = formatRupiah(totalTunggakan);
+            document.getElementById('pdf-report-date').innerText = `Periode Dokumen: ${new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+            
+            if(authSession && authSession.name) {
+                document.getElementById('pdf-signer-name').innerText = `( ${authSession.name} )`;
+            }
+
+            const pdfTableBody = document.getElementById('pdf-table-body');
+            pdfTableBody.innerHTML = '';
+
+            transactions.forEach((t, index) => {
+                const isMasuk = t.tipe === 'masuk';
+                const row = `
+                    <tr class="border-b border-slate-200">
+                        <td class="p-1.5 border-r border-slate-200 text-center">${index + 1}</td>
+                        <td class="p-1.5 border-r border-slate-200">${formatDate(t.tanggal)}</td>
+                        <td class="p-1.5 border-r border-slate-200 font-bold">${t.keterangan}</td>
+                        <td class="p-1.5 border-r border-slate-200">${t.kategori || 'Kas Rutin'}</td>
+                        <td class="p-1.5 border-r border-slate-200 text-center font-bold ${isMasuk ? 'text-emerald-700' : 'text-red-700'}">${isMasuk ? 'Pemasukan' : 'Pengeluaran'}</td>
+                        <td class="p-1.5 text-right font-bold">${formatRupiah(t.nominal)}</td>
+                    </tr>
+                `;
+                pdfTableBody.insertAdjacentHTML('beforeend', row);
+            });
+
+            // Trigger PDF Download
+            const element = document.getElementById('pdf-report-content');
+            const options = {
+                margin:       0.4,
+                filename:     `Laporan_Neraca_Kas_Paskibra_YBAC_${new Date().toISOString().slice(0,10)}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(options).from(element).save();
+        });
+
+        // Search, Filter & Date Range Events
+        document.getElementById('search-filter').addEventListener('input', updateDashboard);
+        document.getElementById('type-filter').addEventListener('change', updateDashboard);
+        document.getElementById('category-filter').addEventListener('change', updateDashboard);
+        document.getElementById('filter-start-date').addEventListener('change', updateDashboard);
+        document.getElementById('filter-end-date').addEventListener('change', updateDashboard);
+        document.getElementById('search-tunggakan').addEventListener('input', updateTunggakanPanel);
+
+        document.getElementById('btn-reset-date-filter').addEventListener('click', function() {
+            document.getElementById('filter-start-date').value = '';
+            document.getElementById('filter-end-date').value = '';
+            updateDashboard();
+        });
+
+        // Export CSV
+        document.getElementById('btn-export-csv').addEventListener('click', function() {
+            if (transactions.length === 0) {
+                alert('Tidak ada data untuk diexport!');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,ID,Tanggal,Keterangan,Kategori,Tipe,Nominal (Rp)\n";
+            transactions.forEach(t => {
+                const cleanDesc = `"${t.keterangan.replace(/"/g, '""')}"`;
+                csvContent += `${t.id},${t.tanggal},${cleanDesc},${t.kategori || 'Kas Rutin'},${t.tipe},${t.nominal}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Laporan_Kas_Paskibra_YBAC_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        // Backup & Restore Data JSON
+        document.getElementById('btn-export-json').addEventListener('click', function() {
+            const backupData = {
+                transactions: transactions,
+                tunggakanList: tunggakanList,
+                exportDate: new Date().toISOString()
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `Backup_Kas_YBAC_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        });
+
+        document.getElementById('input-import-json').addEventListener('change', function(e) {
+            const fileReader = new FileReader();
+            fileReader.onload = function(evt) {
+                try {
+                    const imported = JSON.parse(evt.target.result);
+                    if (imported.transactions && imported.tunggakanList) {
+                        transactions = imported.transactions;
+                        tunggakanList = imported.tunggakanList;
+                        saveTransactions();
+                        saveTunggakan();
+                        updateDashboard();
+                        updateTunggakanPanel();
+                        alert('Data berhasil di-restore!');
+                    } else {
+                        alert('Format file backup JSON tidak valid.');
+                    }
+                } catch (err) {
+                    alert('Gagal membaca file JSON.');
+                }
+            };
+            if(e.target.files[0]) fileReader.readAsText(e.target.files[0]);
+        });
+
+        // Print & Reset
+        document.getElementById('btn-print').addEventListener('click', function() {
+            window.print();
+        });
+
+        document.getElementById('btn-reset-data').addEventListener('click', function() {
+            if (confirm('Reset seluruh data kas dan tunggakan ke default awal?')) {
+                transactions = [...defaultTransactions];
+                tunggakanList = [...defaultTunggakan];
+                saveTransactions();
+                saveTunggakan();
+                updateDashboard();
+                updateTunggakanPanel();
+            }
+        });
+
+        // Default Date Today
+        document.getElementById('input-tanggal').valueAsDate = new Date();
+
+        // Run Engine
+        checkAuth();
+    </script>
+</body>
+</html>
